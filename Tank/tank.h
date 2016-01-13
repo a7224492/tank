@@ -11,7 +11,6 @@
 #define MY_TANK_SPEED  0.13
 
 #define MY_TANK_MAX_BULLET_NUM 4
-#define MY_TANK_SHOT_DELAY 180
 
 struct Bullet;
 typedef struct Bullet Bullet;
@@ -19,15 +18,25 @@ typedef struct Bullet Bullet;
 typedef struct _MyTank
 {
     int x,y;
+    int w,h;
     int shotx,shoty;
     SDL_Surface *img;
     SDL_Rect *imgRect;
     DIR dir;
     int moveLen;
     BOOL isMove;
-    Bullet *bullet[MY_TANK_MAX_BULLET_NUM];
     int shotDelay;
+    Bullet *bullet[MY_TANK_MAX_BULLET_NUM];
 }MyTank;
+
+typedef struct EnemyTank
+{
+    int x, y;
+    int w,h;
+    SDL_Surface *img;
+    SDL_Rect *imgRect;
+    DIR dir;
+}EnemyTank;
 
 void initMyTank(MyTank *mytank, int x, int y);
 void setMyTankDir(MyTank *myTank, DIR dir);

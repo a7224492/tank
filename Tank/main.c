@@ -5,14 +5,18 @@
 #include "draw.h"
 #include "tank.h"
 #include "events.h"
+#include "bfield.h"
 
 extern SDL_Surface *background;
 
 MyTank myTank;
+EnemyTank enemyTank[3];
 SDL_Surface *screen;
 
 int main(int arc, char **argv)
 {
+    int i;
+
     SDL_Init(SDL_INIT_EVERYTHING);
     SDL_InitSubSystem( SDL_INIT_AUDIO);
     SDL_SetVideoMode( 640, 480,16,
@@ -20,6 +24,11 @@ int main(int arc, char **argv)
     screen = SDL_GetVideoSurface();
     initData();
     initMyTank(&myTank, 0, 0);
+    for (i = 0; i < 3; ++i)
+    {
+        initEnemyTank(&enemyTank[i], 100+100*i, 100);
+    }
+    initBfield();
 
     int running = 1;
     Uint8 *keystate;
@@ -28,8 +37,7 @@ int main(int arc, char **argv)
     while (running)
     {
         //Pause
-        SDL_Delay( 50  );
-
+        SDL_Delay(20);
         preTicks = currTicks;
         currTicks = SDL_GetTicks();
         ms = currTicks-preTicks;

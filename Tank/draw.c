@@ -2,10 +2,13 @@
 #include "tank.h"
 #include "bullet.h"
 #include "move.h"
+#include "bfield.h"
 
 extern MyTank myTank;
 extern SDL_Surface *screen;
 extern SDL_Surface *background;
+extern EnemyTank enemyTank[];
+extern Bfield bfield;
 
 static void updateMyTank(int ms)
 {
@@ -20,8 +23,18 @@ static void updateMyTank(int ms)
             myTank.shotDelay = 0;
         }
     }
-    SDL_Rect rect = {myTank.x, myTank.y, MY_TANK_WIDTH, MY_TANK_HEIGHT};
+    SDL_Rect rect = {myTank.x, myTank.y, 0,0};
     SDL_BlitSurface(myTank.img, myTank.imgRect, screen, &rect);
+}
+
+static void updateEnemyTank(int ms)
+{
+    int i;
+    for (i = 0; i < bfield.enemyTankAliveNum; ++i)
+    {
+        SDL_Rect rect = {enemyTank[i].x, enemyTank[i].y, enemyTank[i].w, enemyTank[i].h};
+        SDL_BlitSurface(enemyTank[i].img, enemyTank[i].imgRect, screen, &rect);
+    }
 }
 
 static void updateBackground()
@@ -52,6 +65,7 @@ void updateGame(int ms)
     updateBackground();
     updateMyTank(ms);
     updateBullet(ms);
+    updateEnemyTank(ms);
 }
 
 void drawGame()

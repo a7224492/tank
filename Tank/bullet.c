@@ -2,6 +2,7 @@
 
 #define BULLET_WIDTH  8
 #define BULLET_HEIGHT 10
+#define BULLET_SPEED 0.1789
 
 extern SDL_Surface *bulletImg;
 
@@ -39,7 +40,7 @@ Bullet* getBullet(int x, int y, DIR dir)
         break;
     }
 
-    bullet->speed = 0.12345;
+    bullet->speed = BULLET_SPEED;
 
     return bullet;
 }

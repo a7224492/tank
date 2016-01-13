@@ -3,7 +3,7 @@
 
 #include <SDL/SDL.h>
 
-#define IMG_DIR "/home/jz/project/Tank/gfx/"
+#define IMG_DIR "/home/jz/project/qtworkspace/Tank/gfx/"
 
 #define TRUE  1
 #define FALSE 0

@@ -24,7 +24,7 @@ SOURCES += \
     move.c \
     draw.c \
     bullet.c \
-    units.c \
+    bfield.c \
     shot.c
 
 HEADERS += \
@@ -35,5 +35,5 @@ HEADERS += \
     events.h \
     move.h \
     bullet.h \
-    units.h \
-    shot.h
+    shot.h \
+    bfield.h

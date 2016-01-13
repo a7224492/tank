@@ -13,23 +13,24 @@ void setMyTankKeyEvent(Uint8 *keystate)
     {
         setMyTankDir(&myTank, UP);
         isMyTankMove = TRUE;
-    }else if (keystate[SDLK_s])
+    }if (keystate[SDLK_s])
     {
         setMyTankDir(&myTank, DOWN);
         isMyTankMove = TRUE;
-    }else if (keystate[SDLK_a])
+    }if (keystate[SDLK_a])
     {
         setMyTankDir(&myTank, LEFT);
         isMyTankMove = TRUE;
-    }else if (keystate[SDLK_d])
+    }if (keystate[SDLK_d])
     {
         setMyTankDir(&myTank, RIGHT);
         isMyTankMove = TRUE;
-    }else if (keystate[SDLK_j])
+    }
+
+    if (keystate[SDLK_j])
     {
         myTankShot();
     }
-
     if (isMyTankMove)
     {
         myTank.isMove = TRUE;

@@ -2,6 +2,8 @@
 #include "tank.h"
 #include "bullet.h"
 
+#define MY_TANK_SHOT_DELAY 180
+
 extern MyTank myTank;
 
 static int isMyTankAbleShot(MyTank *tank)
