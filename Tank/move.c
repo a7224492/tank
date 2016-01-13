@@ -2,6 +2,7 @@
 #include "tank.h"
 #include "bullet.h"
 #include "bfield.h"
+#include <stdio.h>
 
 extern SDL_Surface *screen;
 extern MyTank myTank;
@@ -10,40 +11,55 @@ extern EnemyTank enemyTank[];
 
 static BOOL isPointInRect(SDL_Rect *rect, int x, int y)
 {
-    if (!(rect->x > x || (rect->x+rect->w) < x || rect->y > x || (rect->y+rect->h)))
+    if (!(rect->x > x || (rect->x+rect->w) < x || rect->y > y || (rect->y+rect->h) < y))
+    {
         return TRUE;
+    }
     return FALSE;
 }
 
 static BOOL isOverlapEnemyTank(MyTank *myTank)
 {
     int i;
+    int p1x,p1y;
+    int p2x,p2y;
+
+    switch (myTank->dir)
+    {
+    case UP:
+        p1x = myTank->x;
+        p1y = myTank->y;
+        p2x = myTank->x+myTank->imgRect->w;
+        p2y = myTank->y;
+        break;
+    case DOWN:
+        p1x = myTank->x;
+        p1y = myTank->y+myTank->imgRect->h;
+        p2x = myTank->x+myTank->imgRect->w;
+        p2y = myTank->y+myTank->imgRect->h;
+        break;
+    case LEFT:
+        p1x = myTank->x;
+        p1y = myTank->y;
+        p2x = myTank->x;
+        p2y = myTank->y+myTank->imgRect->h;
+        break;
+    case RIGHT:
+        p1x = myTank->x+myTank->imgRect->w;
+        p1y = myTank->y;
+        p2x = myTank->x+myTank->imgRect->w;
+        p2y = myTank->y+myTank->imgRect->h;
+        break;
+    }
+
     for (i = 0; i < bfield.enemyTankAliveNum; ++i)
     {
         EnemyTank *enemy = &enemyTank[i];
-        switch (myTank->dir)
-        {
-        case UP:
-            if (isPointInRect(enemy->imgRect, myTank->x, myTank->y) || \
-                    isPointInRect(enemy->imgRect, myTank->x+myTank->imgRect->w, myTank->y))
-                return TRUE;
-            break;
-        case DOWN:
-            if (isPointInRect(enemy->imgRect, myTank->x, myTank->y+myTank->imgRect->h) || \
-                    isPointInRect(enemy->imgRect, myTank->x+myTank->imgRect->w, myTank->y+myTank->imgRect->h))
-                return TRUE;
-            break;
-        case LEFT:
-            if (isPointInRect(enemy->imgRect, myTank->x, myTank->y) || \
-                    isPointInRect(enemy->imgRect, myTank->x, myTank->y+myTank->imgRect->h))
-                return TRUE;
-            break;
-        case RIGHT:
-            if (isPointInRect(enemy->imgRect, myTank->x+myTank->imgRect->w, myTank->y) || \
-                    isPointInRect(enemy->imgRect, myTank->x+myTank->imgRect->w, myTank->y+myTank->imgRect->h))
-                return TRUE;
-            break;
-        }
+        if (!enemy->isAlive)
+            continue;
+        SDL_Rect rect = {enemy->x, enemy->y, enemy->w, enemy->h};
+        if (isPointInRect(&rect, p1x,p1y) || isPointInRect(&rect, p2x, p2y))
+            return TRUE;
     }
 
     return FALSE;
@@ -51,43 +67,44 @@ static BOOL isOverlapEnemyTank(MyTank *myTank)
 
 void moveMyTank(int ms)
 {
+    int len = MY_TANK_SPEED*ms;
     switch (myTank.dir)
     {
     case UP:
-        if ((myTank.y -= MY_TANK_SPEED*ms) < 0)
+        if ((myTank.y -= len) < 0)
         {
             myTank.y = 0;
         }else if (isOverlapEnemyTank(&myTank))
         {
-            myTank.y += MY_TANK_SPEED*ms;
+            myTank.y += len;
         }
 
         break;
     case DOWN:
-        if (((myTank.y +=MY_TANK_SPEED*ms)+MY_TANK_WIDTH) > screen->h)
+        if (((myTank.y += len)+myTank.imgRect->h) > screen->h)
         {
-            myTank.y =screen->h-MY_TANK_WIDTH;
+            myTank.y =screen->h-myTank.imgRect->h;
         }else if (isOverlapEnemyTank(&myTank))
         {
-            myTank.y -= MY_TANK_SPEED*ms;
+            myTank.y -= len;
         }
         break;
     case LEFT:
-        if ((myTank.x -= MY_TANK_SPEED*ms) < 0)
+        if ((myTank.x -= len) < 0)
         {
             myTank.x = 0;
         }else if (isOverlapEnemyTank(&myTank))
         {
-            myTank.x += MY_TANK_SPEED*ms;
+            myTank.x += len;
         }
         break;
     case RIGHT:
-        if (((myTank.x += MY_TANK_SPEED*ms)+MY_TANK_WIDTH) > screen->w)
+        if (((myTank.x += len)+myTank.imgRect->w) > screen->w)
         {
-            myTank.x = screen->w-MY_TANK_HEIGHT;
+            myTank.x = screen->w-myTank.imgRect->w;
         }else if (isOverlapEnemyTank(&myTank))
         {
-            myTank.x -= MY_TANK_SPEED*ms;
+            myTank.x -= len;
         }
         break;
     }
@@ -97,10 +114,56 @@ void moveMyTank(int ms)
         myTank.isMove = FALSE;
 }
 
+static int bulletHitEnemyTank(Bullet *bullet)
+{
+    int i;
+    int p1x,p1y;
+    int p2x,p2y;
+
+    switch (bullet->dir)
+    {
+    case UP:
+        p1x = bullet->x;
+        p1y = bullet->y;
+        p2x = bullet->x+bullet->imgRect->w;
+        p2y = bullet->y;
+        break;
+    case DOWN:
+        p1x = bullet->x;
+        p1y = bullet->y+bullet->imgRect->h;
+        p2x = bullet->x+bullet->imgRect->w;
+        p2y = bullet->y+bullet->imgRect->h;
+        break;
+    case LEFT:
+        p1x = bullet->x;
+        p1y = bullet->y;
+        p2x = bullet->x;
+        p2y = bullet->y+bullet->imgRect->h;
+        break;
+    case RIGHT:
+        p1x = bullet->x+bullet->imgRect->w;
+        p1y = bullet->y;
+        p2x = bullet->x+bullet->imgRect->w;
+        p2y = bullet->y+bullet->imgRect->h;
+        break;
+    }
+    for (i = 0; i < bfield.enemyTankAliveNum; ++i)
+    {
+        if (!enemyTank[i].isAlive)
+            continue;
+        SDL_Rect rect = {enemyTank[i].x, enemyTank[i].y, enemyTank[i].imgRect->x, enemyTank[i].imgRect->y};
+        if (isPointInRect(&rect, p1x, p1y) || isPointInRect(&rect, p2x,p2y))
+            return i;
+    }
+
+    return -1;
+}
+
 BOOL moveMyBullet(MyTank *myTank, int i,int ms)
 {
     Bullet *bullet = myTank->bullet[i];
     BOOL isAlive = TRUE;
+    int diedEnemyIndex;
 
     if (bullet)
     {
@@ -135,6 +198,12 @@ BOOL moveMyBullet(MyTank *myTank, int i,int ms)
             }
             break;
         }
+    }
+
+    if ((diedEnemyIndex = bulletHitEnemyTank(bullet)) != -1)
+    {
+        enemyTank[diedEnemyIndex].isAlive = FALSE;
+        isAlive = FALSE;
     }
 
     if (!isAlive)

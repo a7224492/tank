@@ -32,8 +32,11 @@ static void updateEnemyTank(int ms)
     int i;
     for (i = 0; i < bfield.enemyTankAliveNum; ++i)
     {
-        SDL_Rect rect = {enemyTank[i].x, enemyTank[i].y, enemyTank[i].w, enemyTank[i].h};
-        SDL_BlitSurface(enemyTank[i].img, enemyTank[i].imgRect, screen, &rect);
+        if (enemyTank[i].isAlive)
+        {
+            SDL_Rect rect = {enemyTank[i].x, enemyTank[i].y, enemyTank[i].w, enemyTank[i].h};
+            SDL_BlitSurface(enemyTank[i].img, enemyTank[i].imgRect, screen, &rect);
+        }
     }
 }
 

@@ -8,9 +8,8 @@
 #include "bfield.h"
 
 extern SDL_Surface *background;
+extern Bfield bfield;
 
-MyTank myTank;
-EnemyTank enemyTank[3];
 SDL_Surface *screen;
 
 int main(int arc, char **argv)
@@ -23,11 +22,6 @@ int main(int arc, char **argv)
                            0 | SDL_HWSURFACE | SDL_DOUBLEBUF );
     screen = SDL_GetVideoSurface();
     initData();
-    initMyTank(&myTank, 0, 0);
-    for (i = 0; i < 3; ++i)
-    {
-        initEnemyTank(&enemyTank[i], 100+100*i, 100);
-    }
     initBfield();
 
     int running = 1;

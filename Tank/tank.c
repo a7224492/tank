@@ -82,6 +82,7 @@ void initEnemyTank(EnemyTank *enemyTank, int x, int y)
     enemyTank->w = ENEMY_TANK_WIDTH;
     enemyTank->h = ENEMY_TANK_HEIGHT;
     enemyTank->img = enemyTankImg;
+    enemyTank->isAlive = TRUE;
     setEnemyTankDir(enemyTank, DOWN);
 }
 

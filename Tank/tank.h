@@ -36,6 +36,7 @@ typedef struct EnemyTank
     SDL_Surface *img;
     SDL_Rect *imgRect;
     DIR dir;
+    BOOL isAlive;
 }EnemyTank;
 
 void initMyTank(MyTank *mytank, int x, int y);

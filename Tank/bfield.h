@@ -4,6 +4,7 @@
 typedef struct Bfield
 {
     int enemyTankAliveNum;
+    int maxAliveEnemyNum;
 }Bfield;
 
 void initBfield();
