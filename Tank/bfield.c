@@ -2,6 +2,7 @@
 #include "tank.h"
 
 #define MAX_ALIVE_ENENMY_NUM 3
+#define INIT_REMAIN_ENEMY_NUM 10
 
 Bfield bfield;
 MyTank myTank;
@@ -17,6 +18,7 @@ void initBfield()
     {
         initEnemyTank(&enemyTank[i], 100+100*i, 100);
     }
+    bfield.produceNextEnemyTime = -1;
 }
 
 

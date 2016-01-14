@@ -151,7 +151,7 @@ static int bulletHitEnemyTank(Bullet *bullet)
     {
         if (!enemyTank[i].isAlive)
             continue;
-        SDL_Rect rect = {enemyTank[i].x, enemyTank[i].y, enemyTank[i].imgRect->x, enemyTank[i].imgRect->y};
+        SDL_Rect rect = {enemyTank[i].x, enemyTank[i].y, enemyTank[i].imgRect->w, enemyTank[i].imgRect->h};
         if (isPointInRect(&rect, p1x, p1y) || isPointInRect(&rect, p2x,p2y))
             return i;
     }

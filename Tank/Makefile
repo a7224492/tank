@@ -33,7 +33,7 @@ MOVE          = mv -f
 TAR           = tar -cf
 COMPRESS      = gzip -9f
 DISTNAME      = Tank1.0.0
-DISTDIR = /home/jz/project/Tank/.tmp/Tank1.0.0
+DISTDIR = /home/jz/project/Tank/Tank/.tmp/Tank1.0.0
 LINK          = g++
 LFLAGS        = -Wl,-O1 -Wl,-rpath,/usr/local/Qt-5.5.0/lib
 LIBS          = $(SUBLIBS) `sdl-config --cflags --libs` -L/usr/local/Qt-5.5.0/lib -lQt5Core -lpthread 
@@ -55,7 +55,7 @@ SOURCES       = main.c \
 		move.c \
 		draw.c \
 		bullet.c \
-		units.c \
+		bfield.c \
 		shot.c 
 OBJECTS       = main.o \
 		data.o \
@@ -64,7 +64,7 @@ OBJECTS       = main.o \
 		move.o \
 		draw.o \
 		bullet.o \
-		units.o \
+		bfield.o \
 		shot.o
 DIST          = /usr/local/Qt-5.5.0/mkspecs/features/spec_pre.prf \
 		/usr/local/Qt-5.5.0/mkspecs/common/unix.conf \
@@ -188,15 +188,15 @@ DIST          = /usr/local/Qt-5.5.0/mkspecs/features/spec_pre.prf \
 		events.h \
 		move.h \
 		bullet.h \
-		units.h \
-		shot.h main.c \
+		shot.h \
+		bfield.h main.c \
 		data.c \
 		tank.c \
 		events.c \
 		move.c \
 		draw.c \
 		bullet.c \
-		units.c \
+		bfield.c \
 		shot.c
 QMAKE_TARGET  = Tank
 DESTDIR       = #avoid trailing-slash linebreak
@@ -477,8 +477,8 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
-	$(COPY_FILE) --parents draw.h defs.h tank.h data.h events.h move.h bullet.h units.h shot.h $(DISTDIR)/
-	$(COPY_FILE) --parents main.c data.c tank.c events.c move.c draw.c bullet.c units.c shot.c $(DISTDIR)/
+	$(COPY_FILE) --parents draw.h defs.h tank.h data.h events.h move.h bullet.h shot.h bfield.h $(DISTDIR)/
+	$(COPY_FILE) --parents main.c data.c tank.c events.c move.c draw.c bullet.c bfield.c shot.c $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -519,7 +519,8 @@ main.o: main.c defs.h \
 		data.h \
 		draw.h \
 		tank.h \
-		events.h
+		events.h \
+		bfield.h
 	$(CC) -c $(CFLAGS) $(INCPATH) -o main.o main.c
 
 data.o: data.c data.h \
@@ -541,23 +542,26 @@ events.o: events.c events.h \
 move.o: move.c move.h \
 		tank.h \
 		defs.h \
-		bullet.h
+		bullet.h \
+		bfield.h
 	$(CC) -c $(CFLAGS) $(INCPATH) -o move.o move.c
 
 draw.o: draw.c draw.h \
 		defs.h \
 		tank.h \
 		bullet.h \
-		move.h
+		move.h \
+		bfield.h
 	$(CC) -c $(CFLAGS) $(INCPATH) -o draw.o draw.c
 
 bullet.o: bullet.c bullet.h \
 		defs.h
 	$(CC) -c $(CFLAGS) $(INCPATH) -o bullet.o bullet.c
 
-units.o: units.c units.h \
+bfield.o: bfield.c bfield.h \
+		tank.h \
 		defs.h
-	$(CC) -c $(CFLAGS) $(INCPATH) -o units.o units.c
+	$(CC) -c $(CFLAGS) $(INCPATH) -o bfield.o bfield.c
 
 shot.o: shot.c shot.h \
 		tank.h \

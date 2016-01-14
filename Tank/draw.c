@@ -36,6 +36,14 @@ static void updateEnemyTank(int ms)
         {
             SDL_Rect rect = {enemyTank[i].x, enemyTank[i].y, enemyTank[i].w, enemyTank[i].h};
             SDL_BlitSurface(enemyTank[i].img, enemyTank[i].imgRect, screen, &rect);
+        }else if ((bfield.produceNextEnemyTime != -1) && (bfield.produceNextEnemyTime - ms) <= 0)
+        {
+            enemyTank[i].isAlive = TRUE;
+            bfield.produceNextEnemyTime = -1;
+        }else if ((bfield.produceNextEnemyTime == -1) && bfield.remainEnemyNum > 0)
+        {
+            bfield.remainEnemyNum -= 1;
+            bfield.produceNextEnemyTime = TIME_PRODUCE_ENEMY;
         }
     }
 }
