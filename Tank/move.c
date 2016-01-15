@@ -204,6 +204,7 @@ BOOL moveMyBullet(MyTank *myTank, int i,int ms)
     {
         enemyTank[diedEnemyIndex].isAlive = FALSE;
         isAlive = FALSE;
+        bfield.produceNextEnemyTime[i] = TIME_PRODUCE_ENEMY;
     }
 
     if (!isAlive)

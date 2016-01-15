@@ -18,7 +18,11 @@ void initBfield()
     {
         initEnemyTank(&enemyTank[i], 100+100*i, 100);
     }
-    bfield.produceNextEnemyTime = -1;
+    bfield.produceNextEnemyTime = (int *)malloc(sizeof(int)*bfield.maxAliveEnemyNum);
+    for (i = 0; i < bfield.maxAliveEnemyNum; ++i)
+    {
+        bfield.produceNextEnemyTime[i] = -1;
+    }
 }
 
 

@@ -8,7 +8,7 @@ typedef struct Bfield
     int enemyTankAliveNum;
     int maxAliveEnemyNum;
     int remainEnemyNum;
-    int produceNextEnemyTime;
+    int *produceNextEnemyTime;
 }Bfield;
 
 void initBfield();
