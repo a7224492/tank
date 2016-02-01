@@ -3,6 +3,7 @@
 #include "bullet.h"
 #include "move.h"
 #include "bfield.h"
+#include "defs.h"
 
 extern MyTank myTank;
 extern SDL_Surface *screen;
