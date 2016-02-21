@@ -6,7 +6,7 @@
 class EnemyTank : public Tank
 {
 public:
-	EnemyTank(int x, int y, Dir dir);
+	EnemyTank(Vector2D pos, Dir dir);
 	virtual ~EnemyTank();
 	void update();
 	void draw();
@@ -36,10 +36,11 @@ private:
 		DESTORY
 	}state;
 	int aiFrame;
-
+	
 	void executeState();
 	void AI();
 	void shot();
+	void changeDirection(Dir direction);
 };
 
 #endif

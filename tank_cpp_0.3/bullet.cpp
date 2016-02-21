@@ -25,7 +25,7 @@ void Bullet::excuteState()
 	switch (state)
 	{
 	case MOVE:
-		pos += speed;
+		pos += velocity;
 
 		checkCollision();
 		
@@ -44,13 +44,13 @@ void Bullet::draw()
 void Bullet::changeStateToMove()
 {
 	state = MOVE;
-	if (angle%90 == 0)
+	if (((int)angle)%90 == 0)
 	{
-		speed.x = MoveObject::speedVectorX[direction]*m_dSpeed;
-		speed.y = MoveObject::speedVectorY[direction]*m_dSpeed;
+		velocity.x = MoveObject::speedVectorX[direction]*m_dSpeed;
+		velocity.y = MoveObject::speedVectorY[direction]*m_dSpeed;
 	}else{
-		speed.x = MoveObject::speedVectorX[direction]*sqrt(m_dSpeed*m_dSpeed/2);
-		speed.y = MoveObject::speedVectorY[direction]*sqrt(m_dSpeed*m_dSpeed/2);
+		velocity.x = MoveObject::speedVectorX[direction]*sqrt(m_dSpeed*m_dSpeed/2);
+		velocity.y = MoveObject::speedVectorY[direction]*sqrt(m_dSpeed*m_dSpeed/2);
 	}
 }
 

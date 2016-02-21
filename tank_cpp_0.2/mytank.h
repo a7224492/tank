@@ -8,16 +8,14 @@
 using namespace std;
 
 class Bullet;
-class SPoint;
 
 class MyTank : public Tank
 {
 public:
-	MyTank(int x, int y, Dir direction);
+	MyTank(Vector2D pos, Dir direction);
 	virtual ~MyTank();
 	void update();
 	void draw(SDL_Surface *background);
-	
 	
 	inline void changeToMoveState(){
 		state = MOVE;

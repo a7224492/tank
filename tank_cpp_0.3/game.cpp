@@ -9,7 +9,7 @@
 using namespace std;
 
 #define IMG_PATH "G:/GithubCode/tank/gfx/"
-#define MAX_ENEMY_NUM 3
+#define MAX_ENEMY_NUM 1
 #define BOMB_IMG_NUM 14
 #define SET_IMG_CANCEL_RGB(img, r,g,b)\
 	SDL_Surface *(temp##img)= SDL_DisplayFormat(img);\
@@ -105,11 +105,13 @@ int Game::updateGame()
 	{
 		return -1;
 	}
-	if (myTank)
+	if (myTank->getAlive())
+	{
 		myTank->update();
+	}
 	for (size_t i = 0; i < enemyTankVec.size(); ++i)
 	{
-		if (enemyTankVec[i])
+		if (enemyTankVec[i]->getAlive())
 			enemyTankVec[i]->update();
 	}
 	return 0;
@@ -118,11 +120,11 @@ int Game::updateGame()
 void Game::drawGame()
 {
 	SDL_BlitSurface(background, NULL, screen, NULL);
-	if (myTank)
-		myTank->draw(background);
+	if (myTank->getAlive())
+		myTank->draw();
 	for (size_t i = 0 ; i < enemyTankVec.size(); ++i)
 	{
-		if (enemyTankVec[i])
+		if (enemyTankVec[i]->getAlive())
 		{
 			enemyTankVec[i]->draw();
 		}
@@ -132,18 +134,21 @@ void Game::drawGame()
 
 void Game::myTankChangeToDestory()
 {
-	myTank->changeToDestoryState();
+	
 }
 
 void Game::myTankDestory()
 {
-	delete myTank;
-	myTank = NULL;
+	if (myTank)
+	{
+		delete myTank;
+		myTank = NULL;
+	}
 }
 
 void Game::myBulletShotEnemy(int i)
 {
 	if (i == enemyTankVec.size())
 		return;
-	enemyTankVec[i]->changeToDestoryState();
+	enemyTankVec[i]->setAlive(false);
 }

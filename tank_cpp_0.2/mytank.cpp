@@ -2,14 +2,15 @@
 #include "enemy_tank.h"
 #include "my_bullet.h"
 #include "C2DMatrix.h"
-#include "SVector2D.h"
+#include "Vector2D.h"
 #include "game.h"
+#include <cmath>
 #include <SDL/SDL_rotozoom.h>
 
 #define MOVE_DELAY 4000
 #define MAX_BULLET_NUM 4
 
-MyTank::MyTank(int x, int y, Dir direction): Tank(x,y, direction)
+MyTank::MyTank(Vector2D pos, Dir direction): Tank(pos, direction)
 {
 	control.x = 0;
 	control.y = 0;
@@ -18,6 +19,7 @@ MyTank::MyTank(int x, int y, Dir direction): Tank(x,y, direction)
 	{
 		bulletVec.push_back(NULL);
 	}
+	m_dSpeed = 0.2;
 }
 
 void MyTank::update()
@@ -49,7 +51,7 @@ void MyTank::update()
 		/************************************************************************/
 		if (keystate[SDLK_t])
 		{
-			SPoint point(1,1);
+			Vector2D point(1,1);
 			nativeTransform(point);
 			int x = 10;
 		}
@@ -73,11 +75,6 @@ void MyTank::excuteState()
 	switch (state)
 	{
 	case MOVE: 
-		moveFrame = (moveFrame+1)%20;
-		if (moveFrame != 0)
-		{
-			return;
-		}	
 		if (control.x > 0)
 		{
 			if (control.y > 0)
@@ -107,32 +104,28 @@ void MyTank::excuteState()
 		}
 		if (angle%90 == 0)
 		{
-			speed.x = control.x*3;
-			speed.y = control.y*3;
+			speed.x = control.x*m_dSpeed;
+			speed.y = control.y*m_dSpeed;
 		}else
 		{
-			speed.x = control.x*2;
-			speed.y = control.y*2;
+			speed.x = control.x*sqrt(m_dSpeed*m_dSpeed/2);
+			speed.y = control.y*sqrt(m_dSpeed*m_dSpeed/2);
 		}
 		
 		angle = (270+45*direction)%360;
-
 		
-		x += speed.x;
-		y += speed.y;
+		pos += speed;
 
 		if (faceWall())
 		{
-			x -= speed.x;
-			y -= speed.y;
+			pos -= speed;
 		}
 		for (int i = 0; i < game->getEnemyTankNum(); ++i)
 		{
 			const EnemyTank *enemy = game->getEnemyTank(i);
 			if (enemy && faceOtherTank(enemy))
 			{
-				x -= speed.x;
-				y -= speed.y;
+				pos -= speed;
 			}
 		}
 		
@@ -153,18 +146,18 @@ void MyTank::draw(SDL_Surface *background)
 {
 	if (state != DESTORY)
 	{
-		SDL_Rect rect = {x-imgs[direction]->w/2,y-imgs[direction]->h/2, 0, 0};
+		SDL_Rect rect = {pos.x-imgs[direction]->w/2,pos.y-imgs[direction]->h/2, 0, 0};
 		SDL_BlitSurface(imgs[direction], NULL, screen, &rect);
 		drawBullet();
 	}else{
-		SDL_Rect rect = {x-bombImgVec[bombFrame/10]->w/2, y-bombImgVec[bombFrame/10]->h/2, 0, 0};
+		SDL_Rect rect = {pos.x-bombImgVec[bombFrame/10]->w/2, pos.y-bombImgVec[bombFrame/10]->h/2, 0, 0};
 		SDL_BlitSurface(bombImgVec[bombFrame/10], NULL, screen, &rect);
 	}
 }
 
 void MyTank::worldTransformRect(SDL_Rect &rect)
 {
-	SPoint temp(rect.x,rect.y);
+	Vector2D temp(rect.x,rect.y);
 	worldTransform(temp);
 	rect.x = temp.x;
 	rect.y = temp.y;
@@ -185,9 +178,9 @@ void MyTank::shot()
 	}
 	if (i == bulletVec.size())
 		return;
-	SPoint bulletPos(25,0);
+	Vector2D bulletPos(25,0);
 	worldTransform(bulletPos);
-	Bullet *bullet = new MyBullet(bulletPos.x, bulletPos.y, direction);
+	Bullet *bullet = new MyBullet(bulletPos, direction);
 	bullet->setScreen(screen);
 	bullet->setGame(game);
 	bullet->setDirImg(bulletImgs[direction], direction);

@@ -3,6 +3,7 @@
 #include "Vector2D.h"
 #include "enemy_tank.h"
 #include "utils.h"
+#include "TankState.h"
 
 MyBullet::MyBullet(Vector2D pos, Dir direction) : Bullet(pos, direction)
 {
@@ -17,7 +18,7 @@ void MyBullet::checkCollision()
 	for (int i = 0; i < game->getEnemyTankNum(); ++i)
 	{
 		const EnemyTank *enemy = game->getEnemyTank(i);
-		if (!enemy)
+		if (!enemy->getAlive())
 			continue;
 		Vector2D p = enemy->getDownLeftPoint();
 		int width = enemy->getWidth();
@@ -27,7 +28,7 @@ void MyBullet::checkCollision()
 		enemy->nativeTransform(p2);
 		if (isPointInRect(&rect, p2.x, p2.y))
 		{
-			game->myBulletShotEnemy(i);
+			enemy->getFSM()->ChangeState(TankState::destoryState);
 			changeStateToDestory();
 			break;
 		}

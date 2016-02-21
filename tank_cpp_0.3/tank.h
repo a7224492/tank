@@ -2,20 +2,36 @@
 #define TANK_H
 
 #include "move_object.h"
-#include "SVector2D.h"
+#include "Vector2D.h"
+#include "StateMachine.h"
+#include "BombEffect.h"
 #include <vector>
 
 using namespace std;
 
 class Bullet;
 
+enum TankType{
+	MY_TANK,
+	ENEMY_TANK
+};
+
 class Tank : public MoveObject
 {
 public:
 	Tank(Vector2D pos, Dir dir);
 	virtual ~Tank();
+
+	virtual void update();
+	virtual void draw();
+
 	void setWidthHeight(int width, int height);
 	void nativeTransform(Vector2D &p) const;
+	void worldTransform(Vector2D &point) const;
+
+	bool faceWall() const;
+	bool faceOtherTank(const Tank *tank) const;
+
 	inline void setWidth(int width){
 		this->width = width;
 	}
@@ -43,8 +59,32 @@ public:
 	inline void setBulletImg(SDL_Surface *img, Dir dir){
 		bulletImgs[dir] = img;
 	}
+	inline bool getIsReadyShot() const{
+		return this->isReadyShot;
+	}
+	inline void setIsReadyShot(bool isReadyShot){
+		this->isReadyShot = isReadyShot;
+	}
+	inline vector<Bullet *>& getBulletVec(){
+		return bulletVec;
+	}
+	inline StateMachine<Tank>* getFSM() const{
+		return this->fsm;
+	}
+	inline StateMachine<Tank>* getShotFSM() const {
+		return this->shotFsm;
+	}
 	inline void addBombImg(SDL_Surface *img){
-		bombImgVec.push_back(img);
+		m_pBombEffect->addBombImg(img);
+	}
+	inline BombEffect* getBombEffect() const{
+		return m_pBombEffect;
+	}
+	inline void setBombEffect(BombEffect *bombEffect){
+		m_pBombEffect = bombEffect;
+	}
+	inline TankType getType() const {
+		return m_eType;
 	}
 private:
 	enum {
@@ -57,19 +97,28 @@ protected:
 	enum {
 		BOMB_FRAME_NUM = 10
 	};
-	int width,height;
+
+	TankType m_eType;
+
+	StateMachine<Tank> *fsm;
+	StateMachine<Tank> *shotFsm;
+
 	vector<Bullet *> bulletVec;
-	int shotFrame;
-	int bombFrame;
-	int bombImgIndex;
-	SDL_Surface *bulletImgs[DIR_NUM];
 	vector<Vector2D> pointVec;
-	vector<SDL_Surface *> bombImgVec;
-	void worldTransform(Vector2D &point);
-	bool faceWall();
-	bool faceOtherTank(const Tank *tank);
+	
+	SDL_Surface *bulletImgs[DIR_NUM];
+
+	int width,height;
+
+	bool isReadyShot;
+
+	BombEffect *m_pBombEffect;
+	
+	
 	void updateBullet();
 	void drawBullet();
+	void checkKeyState();
+	void shot();
 };
 
 #endif

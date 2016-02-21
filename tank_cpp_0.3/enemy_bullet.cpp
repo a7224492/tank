@@ -3,6 +3,8 @@
 #include "mytank.h"
 #include "Vector2D.h"
 #include "utils.h"
+#include "MyTankState.h"
+#include "TankState.h"
 
 EnemyBullet::EnemyBullet(Vector2D pos, Dir direction) : Bullet(pos, direction)
 {
@@ -23,9 +25,10 @@ void EnemyBullet::checkCollision()
 	myTank->nativeTransform(p2);
 	if (isPointInRect(&rect, p2.x, p2.y))
 	{
-		if (!myTank->isDestoryState())
+		if (!(myTank->getFSM()->CurrentState() == TankState::destoryState))
 		{
-			game->myTankChangeToDestory();
+			//game->myTankChangeToDestory();
+			game->getMyTank()->getFSM()->ChangeState(TankState::destoryState);
 			changeStateToDestory();
 		}
 	}

@@ -9,10 +9,10 @@ const int MoveObject::speedVectorY[DIR_NUM] = {
 
 MoveObject::MoveObject(Vector2D pos, Dir dir) : 
 	pos(pos)
-	,direction(dir)
+	, direction(dir)
+	, velocity(Vector2D(0,0))
+	, m_bAlive(true)
 {
-	speed.x = 0;
-	speed.y = 0;
 	moveFrame = -1;
 	angle = (270 + direction * 45) % 360;
 }

@@ -5,7 +5,7 @@
 
 #define MAX_BULLET_NUM 4
 
-EnemyTank::EnemyTank(int x, int y, Dir dir) : Tank(x, y, dir)
+EnemyTank::EnemyTank(Vector2D pos, Dir dir) : Tank(pos, dir)
 {
 	state = MOVE;
 	aiFrame = 0;
@@ -13,6 +13,7 @@ EnemyTank::EnemyTank(int x, int y, Dir dir) : Tank(x, y, dir)
 	{
 		bulletVec.push_back(NULL);
 	}
+	m_dSpeed = 0.2;
 }
 
 void EnemyTank::update()
@@ -33,11 +34,11 @@ void EnemyTank::draw()
 {
 	if (!isDestoryState())
 	{
-		SDL_Rect rect = {x-imgs[direction]->w/2, y-imgs[direction]->h/2, 0, 0};
+		SDL_Rect rect = {pos.x-imgs[direction]->w/2, pos.y-imgs[direction]->h/2, 0, 0};
 		SDL_BlitSurface(imgs[direction], NULL, screen, &rect);
 		drawBullet();
 	}else{
-		SDL_Rect rect = {x-bombImgVec[bombImgIndex]->w/2, y-bombImgVec[bombImgIndex]->h/2, 0, 0};
+		SDL_Rect rect = {pos.x-bombImgVec[bombImgIndex]->w/2, pos.y-bombImgVec[bombImgIndex]->h/2, 0, 0};
 		SDL_BlitSurface(bombImgVec[bombImgIndex], NULL, screen, &rect);
 	}
 }
@@ -48,32 +49,25 @@ void EnemyTank::executeState()
 	switch (state)
 	{
 	case MOVE:
-		moveFrame = (moveFrame+1)%15;
-		if (moveFrame != 0)
-		{
-			return;
-		}
 		if (angle % 90 == 0)
 		{
-			speed.x = MoveObject::speedVectorX[direction]*3;
-			speed.y = MoveObject::speedVectorY[direction]*3;
+			speed.x = MoveObject::speedVectorX[direction]*m_dSpeed;
+			speed.y = MoveObject::speedVectorY[direction]*m_dSpeed;
 		}else{
-			speed.x = MoveObject::speedVectorX[direction]*2;
-			speed.y = MoveObject::speedVectorY[direction]*2;
+			speed.x = MoveObject::speedVectorX[direction]*sqrt(m_dSpeed*m_dSpeed/2);
+			speed.y = MoveObject::speedVectorY[direction]*sqrt(m_dSpeed*m_dSpeed/2);
 		}
 
-		x += speed.x;
-		y += speed.y;
+		pos += speed;
+
 		if (faceWall())
 		{
-			x -= speed.x;
-			y -= speed.y;
+			pos -= speed;
 		}
 		myTank = game->getMyTank();
 		if (faceOtherTank(myTank))
 		{
-			x -= speed.x;
-			y -= speed.y;
+			pos -= speed;
 		}
 		
 		break;
@@ -118,13 +112,18 @@ void EnemyTank::shot()
 	}
 	if (i == bulletVec.size())
 		return;
-	SPoint bulletPos(25,0);
+	Vector2D bulletPos(25,0);
 	worldTransform(bulletPos);
-	EnemyBullet *bullet = new EnemyBullet(bulletPos.x, bulletPos.y, direction);
+	EnemyBullet *bullet = new EnemyBullet(bulletPos, direction);
 	bullet->setScreen(screen);
 	bullet->setGame(game);
 	bullet->setDirImg(bulletImgs[direction], direction);
 	bulletVec[i] = bullet;
+}
+
+void EnemyTank::changeDirection(Dir direction)
+{
+	
 }
 
 EnemyTank::~EnemyTank()
