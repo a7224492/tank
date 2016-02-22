@@ -5,6 +5,7 @@
 #include "TankState.h"
 #include "my_bullet.h"
 #include "enemy_bullet.h"
+#include "Vector2D.h"
 
 #define FIRST_SPEED 0.2
 
@@ -13,6 +14,7 @@ Tank::Tank(Vector2D pos, Dir dir) : MoveObject(pos,dir)
 	, fsm(new StateMachine<Tank>(this))
 	, shotFsm(new StateMachine<Tank>(this))
 	, m_pBombEffect(new BombEffect())
+    , m_iMaxBulletNum(4)
 {
 	fsm->SetCurrentState(TankState::standState);
 	fsm->SetGlobalState(TankState::globalState);
@@ -106,7 +108,7 @@ void Tank::updateBullet()
 		if (bulletVec[i])
 		{
 			bulletVec[i]->update();
-			if (bulletVec[i]->checkDestory())
+			if (!bulletVec[i]->getAlive())
 			{
 				delete bulletVec[i];
 				bulletVec[i] = NULL;
@@ -131,35 +133,8 @@ Tank::~Tank()
 
 void Tank::update()
 {
-	if (m_eType == MY_TANK)
-	{
-		checkKeyState();
-	} else if (m_eType == ENEMY_TANK){
-		Uint8 *keystate = SDL_GetKeyState(0);
-		if (keystate[SDLK_RIGHT])
-		{
-			velocity.x = 1;
-		} else if (keystate[SDLK_LEFT]){
-			velocity.x = -1;
-		} else{
-			velocity.x = 0;
-		} 
-		if (keystate[SDLK_UP])
-		{
-			velocity.y = -1;
-		} else if (keystate[SDLK_DOWN]){
-			velocity.y = 1;
-		} else{
-			velocity.y = 0;
-		}
-
-		velocity.Normalize();
-			
-		if (keystate[SDLK_k])
-		{
-			shot();
-		}
-	}
+	
+	checkKeyState();
 	
 	if (m_bAlive)
 	{
@@ -184,31 +159,81 @@ void Tank::draw()
 void Tank::checkKeyState()
 {
 	Uint8 *keystate = SDL_GetKeyState(0);
-	if (keystate[SDLK_w])
+
+	if (m_eType == MY_TANK)
 	{
-		velocity.y = -1;
-	} else if (keystate[SDLK_s])
-	{
-		velocity.y = 1;
-	} else{
-		velocity.y = 0;
+		if (keystate[SDLK_w])
+		{
+			velocity.y = -1;
+		} else if (keystate[SDLK_s])
+		{
+			velocity.y = 1;
+		} else{
+			velocity.y = 0;
+		}
+
+		if (keystate[SDLK_a])
+		{
+			velocity.x = -1;
+		} else if (keystate[SDLK_d])
+		{
+			velocity.x = 1;
+		} else{
+			velocity.x = 0;
+		}
+		if (keystate[SDLK_j]){
+			shot();
+		}
+	}
+	if (m_eType == ENEMY_TANK){
+		if (keystate[SDLK_UP])
+		{
+			velocity.y = -1;
+		} else if (keystate[SDLK_DOWN])
+		{
+			velocity.y = 1;
+		} else{
+			velocity.y = 0;
+		}
+
+		if (keystate[SDLK_LEFT])
+		{
+			velocity.x = -1;
+		} else if (keystate[SDLK_RIGHT])
+		{
+			velocity.x = 1;
+		} else{
+			velocity.x = 0;
+		}
+		if (keystate[SDLK_k]){
+			shot();
+		}
 	}
 
-	if (keystate[SDLK_a])
-	{
-		velocity.x = -1;
-	} else if (keystate[SDLK_d])
-	{
-		velocity.x = 1;
-	} else{
-		velocity.x = 0;
+	if (velocity.x == 1){
+		if (velocity.y == 1){
+			direction = MoveObject::DOWN_RIGHT;
+		}else if (velocity.y == -1){
+			direction = MoveObject::UP_RIGHT;
+		}else{
+			direction = MoveObject::RIGHT;
+		}
+	}else if (velocity.x == -1){
+		if (velocity.y == 1){
+			direction = MoveObject::DOWN_LEFT;
+		}else if (velocity.y == -1){
+			direction = MoveObject::UP_LEFT;
+		}else {
+			direction = MoveObject::LEFT;
+		}
+	}else {
+		if (velocity.y == 1){
+			direction = MoveObject::DOWN;
+		}else if (velocity.y == -1){
+			direction = MoveObject::UP;
+		}
 	}
-
 	velocity.Normalize();
-
-	if (keystate[SDLK_j]){
-		shot();
-	}
 }
 
 void Tank::shot()
@@ -219,7 +244,10 @@ void Tank::shot()
 	size_t i;
 	for (i = 0; i < bulletVec.size(); ++i)
 	{
-		if (bulletVec[i] == NULL)
+		if (!bulletVec[i])
+			break;
+
+		if (!bulletVec[i]->getAlive())
 			break;
 	}
 	if (i == bulletVec.size())
@@ -236,5 +264,7 @@ void Tank::shot()
 	bullet->setScreen(screen);
 	bullet->setGame(game);
 	bullet->setDirImg(bulletImgs[direction], direction);
+	if (bulletVec[i])
+		delete bulletVec[i];
 	bulletVec[i] = bullet;
 }

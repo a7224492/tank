@@ -5,10 +5,11 @@
 #include "utils.h"
 #include "MyTankState.h"
 #include "TankState.h"
+#include "BulletState.h"
 
 EnemyBullet::EnemyBullet(Vector2D pos, Dir direction) : Bullet(pos, direction)
 {
-
+	m_eType = ENEMY_BULLET;
 }
 
 void EnemyBullet::checkCollision()
@@ -29,7 +30,7 @@ void EnemyBullet::checkCollision()
 		{
 			//game->myTankChangeToDestory();
 			game->getMyTank()->getFSM()->ChangeState(TankState::destoryState);
-			changeStateToDestory();
+			getFSM()->ChangeState(BulletStateName::destoryState);
 		}
 	}
 }

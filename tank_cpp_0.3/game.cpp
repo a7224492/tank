@@ -2,13 +2,14 @@
 #include "mytank.h"
 #include "utils.h"
 #include "enemy_tank.h"
+#include "ResourceManager.h"
 #include <string>
 #include <SDL/SDL_rotozoom.h>
 #include <SDL/SDL_image.h>
 
 using namespace std;
 
-#define IMG_PATH "G:/GithubCode/tank/gfx/"
+#define IMG_PATH "E:/github_code/tank/gfx/"
 #define MAX_ENEMY_NUM 1
 #define BOMB_IMG_NUM 14
 #define SET_IMG_CANCEL_RGB(img, r,g,b)\
@@ -21,6 +22,7 @@ Game::Game(SDL_Surface *screen):
 	screen(screen)
 {
 	loadData();
+	resourceMgr->loadData();
 	init();	
 }
 
@@ -130,25 +132,4 @@ void Game::drawGame()
 		}
 	}
 	SDL_Flip(screen);
-}
-
-void Game::myTankChangeToDestory()
-{
-	
-}
-
-void Game::myTankDestory()
-{
-	if (myTank)
-	{
-		delete myTank;
-		myTank = NULL;
-	}
-}
-
-void Game::myBulletShotEnemy(int i)
-{
-	if (i == enemyTankVec.size())
-		return;
-	enemyTankVec[i]->setAlive(false);
 }

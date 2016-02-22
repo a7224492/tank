@@ -104,7 +104,6 @@ struct Vector2D
   {
     return (x != rhs.x) || (y != rhs.y);
   }
-  
 };
 
 //-----------------------------------------------------------------------some more operator overloads

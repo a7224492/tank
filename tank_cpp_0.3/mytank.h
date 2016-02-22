@@ -4,7 +4,6 @@
 #include <SDL/SDL.h>
 #include <vector>
 #include "tank.h"
-#include "MoveObjectDirection.h"
 #include "StateMachine.h"
 
 using namespace std;

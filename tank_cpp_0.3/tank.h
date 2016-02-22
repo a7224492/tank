@@ -109,11 +109,11 @@ protected:
 	SDL_Surface *bulletImgs[DIR_NUM];
 
 	int width,height;
+	int m_iMaxBulletNum;
 
 	bool isReadyShot;
 
 	BombEffect *m_pBombEffect;
-	
 	
 	void updateBullet();
 	void drawBullet();

@@ -8,7 +8,6 @@
 #include "MyTankState.h"
 #include <cmath>
 #include <SDL/SDL_rotozoom.h>
-#include "MoveObjectDirection.h"
 
 #define MOVE_DELAY 4000
 #define MAX_BULLET_NUM 4

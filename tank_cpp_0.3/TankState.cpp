@@ -40,6 +40,7 @@ void MoveState::Execute(Tank* tank)
 	if (tank->faceWall())
 	{
 		tank->setPos(tank->getPos() - tank->getVelocity());
+		tank->getFSM()->ChangeState(TankState::standState);
 	}
 	if (tank->getType() == MY_TANK)
 	{
@@ -49,6 +50,7 @@ void MoveState::Execute(Tank* tank)
 			if (enemy->getAlive() && tank->faceOtherTank(enemy))
 			{
 				tank->setPos(tank->getPos() - tank->getVelocity());
+				tank->getFSM()->ChangeState(TankState::standState);
 			}
 		}
 	}
@@ -58,6 +60,7 @@ void MoveState::Execute(Tank* tank)
 		if (myTank->getAlive() && tank->faceOtherTank(myTank))
 		{
 			tank->setPos(tank->getPos() - tank->getVelocity());
+			tank->getFSM()->ChangeState(TankState::standState);
 		}
 	}
 }
@@ -125,6 +128,20 @@ BulletReadyState* BulletReadyState::getInstance()
 
 void BulletReadyState::Enter(Tank* tank)
 {
+	vector<Bullet *> &bulletVec = tank->getBulletVec();
+	int i;
+
+	for (i = 0; i < bulletVec.size(); ++i)
+	{
+		if (!bulletVec[i])
+			break;
+	}
+
+	if (i == bulletVec.size())
+	{
+		tank->getShotFSM()->ChangeState(bulletRunOutState);
+		return;
+	}
 	tank->setIsReadyShot(true);
 }
 
@@ -165,19 +182,7 @@ void BulletDelayState::Execute(Tank *tank)
 
 void BulletDelayState::Exit(Tank *tank)
 {
-	vector<Bullet *> &bulletVec = tank->getBulletVec();
-	int i;
-
-	for (i = 0; i < bulletVec.size(); ++i)
-	{
-		if (!bulletVec[i])
-			break;
-	}
-
-	if (i == bulletVec.size())
-	{
-		tank->getShotFSM()->ChangeState(bulletRunOutState);
-	}
+	
 }
 
 BulletRunOutState* BulletRunOutState::getInstance()

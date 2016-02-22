@@ -4,10 +4,11 @@
 #include "enemy_tank.h"
 #include "utils.h"
 #include "TankState.h"
+#include "BulletState.h"
 
 MyBullet::MyBullet(Vector2D pos, Dir direction) : Bullet(pos, direction)
 {
-
+	m_eType = MY_BULLET;
 }
 
 void MyBullet::checkCollision()
@@ -29,7 +30,7 @@ void MyBullet::checkCollision()
 		if (isPointInRect(&rect, p2.x, p2.y))
 		{
 			enemy->getFSM()->ChangeState(TankState::destoryState);
-			changeStateToDestory();
+			getFSM()->ChangeState(BulletStateName::destoryState);
 			break;
 		}
 	}

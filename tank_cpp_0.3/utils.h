@@ -16,6 +16,7 @@
 #include <sstream>
 #include <string>
 #include <SDL/SDL.h>
+#include <limits>
 
 using namespace std;
 

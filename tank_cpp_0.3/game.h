@@ -16,23 +16,7 @@ public:
 	Game(SDL_Surface *screen);
 	int updateGame();
 	void drawGame();
-	void myTankChangeToDestory();
-	void myTankDestory();
-	void myBulletShotEnemy(int i);
-	inline void enemyTankDestory(int i){
-		delete enemyTankVec[i];
-		enemyTankVec[i] = NULL;
-	}
-	inline void enemyTankDestory(EnemyTank *tank){
-		for (int i = 0; i < enemyTankVec.size(); ++i)
-		{
-			if (enemyTankVec[i] == tank)
-			{
-				enemyTankDestory(i);
-				break;
-			}
-		}
-	}
+	
 	inline int getEnemyTankNum(){
 		return enemyTankVec.size();
 	}
@@ -44,9 +28,8 @@ public:
 	inline const MyTank* getMyTank(){
 		return myTank;
 	}
-	inline void destoryTank(Tank *tank){
-		delete tank;
-		tank = NULL;
+	inline SDL_Surface* getScreen() const {
+		return screen;
 	}
 
 private:

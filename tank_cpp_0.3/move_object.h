@@ -2,25 +2,24 @@
 #define MOVE_OBJECT_H
 
 #include <SDL/SDL.h>
+#include <iostream>
 #include "Vector2D.h"
+#include "GameObject.h"
+#include <map>
 
 class Game;
 
-class MoveObject
+class MoveObject : public GameObject
 {
 public:
 	enum Dir {UP = 0, UP_RIGHT, RIGHT, DOWN_RIGHT, DOWN, DOWN_LEFT, LEFT, UP_LEFT};
 	enum {DIR_NUM = 8};
+
 	MoveObject(Vector2D pos, Dir dir);
 	virtual ~MoveObject();
+	
 	inline void setDirImg(SDL_Surface *img, Dir dir){
 		imgs[dir] = img;
-	}
-	inline void setScreen(SDL_Surface *screen){
-		this->screen = screen;
-	};
-	inline void setGame(Game *game){
-		this->game = game;
 	}
 	inline double getAngle() const{
 		return this->angle;
@@ -40,12 +39,7 @@ public:
 	inline Dir getDirection() const {
 		return this->direction;
 	}
-	inline Vector2D getPos() const{
-		return this->pos;
-	}
-	inline void setPos(Vector2D pos){
-		this->pos = pos;
-	}
+	
 	inline Game* getGame() const {
 		return game;
 	}
@@ -57,7 +51,6 @@ public:
 	}
 	
 protected:
-	Vector2D pos;
 	Vector2D m_vHead;
 	Vector2D m_vSide;
 	Vector2D velocity;
@@ -66,17 +59,26 @@ protected:
 	
 	double m_dSpeed;
 	SDL_Surface *imgs[DIR_NUM];
-	SDL_Surface *screen;
+	
 	SDL_Rect oldRegion;
 	Dir direction;
 	int moveFrame;
 	double angle;
-	Game *game;
-	const static int speedVectorX[DIR_NUM];
-	const static int speedVectorY[DIR_NUM];
 
+	
 private:
 	
+};
+
+const Vector2D directionVelocity[] = {
+	Vector2D(0,-1),
+	Vector2D(1,-1),
+	Vector2D(1,0),
+	Vector2D(1,1),
+	Vector2D(0,1),
+	Vector2D(-1,1),
+	Vector2D(-1,0),
+	Vector2D(-1,-1),
 };
 
 #endif
