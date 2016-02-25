@@ -13,6 +13,7 @@
 //------------------------------------------------------------------------
 #include <cassert>
 #include <string>
+#include <typeinfo>
 
 #include "State.h"
 

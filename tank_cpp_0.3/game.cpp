@@ -9,7 +9,7 @@
 
 using namespace std;
 
-#define IMG_PATH "E:/github_code/tank/gfx/"
+#define IMG_PATH "/home/jz/project/GithubCode/tank/gfx/"
 #define MAX_ENEMY_NUM 1
 #define BOMB_IMG_NUM 14
 #define SET_IMG_CANCEL_RGB(img, r,g,b)\

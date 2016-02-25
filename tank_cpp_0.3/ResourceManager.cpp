@@ -3,7 +3,8 @@
 #include <string>
 #include <SDL/SDL_rotozoom.h>
 
-#define IMG_PATH "E:/github_code/tank/gfx/"
+//#define IMG_PATH "E:/github_code/tank/gfx/"
+#define IMG_PATH "/home/jz/project/GithubCode/tank/gfx/"
 
 #define BULLET_BOMB_IMG_NUM 17
 
