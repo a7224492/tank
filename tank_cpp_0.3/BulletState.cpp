@@ -22,7 +22,7 @@ void MoveState::Enter(Bullet *bullet)
 
 void MoveState::Execute(Bullet* bullet)
 {
-	bullet->setPos(bullet->getPos()+bullet->getVelocity());
+	bullet->setPos(bullet->getPos()+bullet->getVelocity()*bullet->getGame()->getElapsedTime());
 	bullet->checkCollision();
 	if (!isPointInRect(&bullet->getGame()->getScreen()->clip_rect, bullet->getPos().x, bullet->getPos().y))
 	{

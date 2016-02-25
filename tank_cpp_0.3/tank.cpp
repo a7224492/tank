@@ -133,7 +133,6 @@ Tank::~Tank()
 
 void Tank::update()
 {
-	
 	checkKeyState();
 	
 	if (m_bAlive)
@@ -234,6 +233,7 @@ void Tank::checkKeyState()
 		}
 	}
 	velocity.Normalize();
+	velocity *= m_dSpeed;
 }
 
 void Tank::shot()

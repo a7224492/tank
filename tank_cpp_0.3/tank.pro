@@ -1,6 +1,6 @@
 TARGET = tank
 CONFIG += console
-LIBS += -lSDL -lSDL_image -lSDL_gfx
+LIBS += -lSDL -lSDL_image -lSDL_gfx -lSDL_ttf
 
 SOURCES +=\
 		  main.cpp \
@@ -21,7 +21,8 @@ SOURCES +=\
     TankState.cpp \
     utils.cpp \
     Vector2d.cpp \
-    move_object.cpp
+    move_object.cpp \
+    enemytankstate.cpp
 
 HEADERS += \
     BombEffect.h \
@@ -43,4 +44,5 @@ HEADERS += \
     TankState.h \
     utils.h \
     Vector2D.h \
-    move_object.h
+    move_object.h \
+    enemytankstate.h

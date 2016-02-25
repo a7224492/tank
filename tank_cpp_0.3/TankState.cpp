@@ -33,13 +33,13 @@ void MoveState::Execute(Tank* tank)
 	if (tank->getVelocity().isZero())
 		tank->getFSM()->ChangeState(standState);
 
-	tank->setVelocity(tank->getVelocity()*tank->getSpeed());
 	tank->setAngle((270 + 45 * tank->getDirection()) % 360);
-	tank->setPos(tank->getPos() + tank->getVelocity());
+	Vector2D moveDist = tank->getVelocity()*tank->getGame()->getElapsedTime();
+	tank->setPos(tank->getPos() + moveDist);
 
 	if (tank->faceWall())
 	{
-		tank->setPos(tank->getPos() - tank->getVelocity());
+		tank->setPos(tank->getPos() - moveDist);
 		tank->getFSM()->ChangeState(TankState::standState);
 	}
 	if (tank->getType() == MY_TANK)
@@ -49,7 +49,7 @@ void MoveState::Execute(Tank* tank)
 			const EnemyTank *enemy = tank->getGame()->getEnemyTank(i);
 			if (enemy->getAlive() && tank->faceOtherTank(enemy))
 			{
-				tank->setPos(tank->getPos() - tank->getVelocity());
+				tank->setPos(tank->getPos() - moveDist);
 				tank->getFSM()->ChangeState(TankState::standState);
 			}
 		}
@@ -59,7 +59,7 @@ void MoveState::Execute(Tank* tank)
 		const MyTank *myTank = tank->getGame()->getMyTank();
 		if (myTank->getAlive() && tank->faceOtherTank(myTank))
 		{
-			tank->setPos(tank->getPos() - tank->getVelocity());
+			tank->setPos(tank->getPos() - moveDist);
 			tank->getFSM()->ChangeState(TankState::standState);
 		}
 	}

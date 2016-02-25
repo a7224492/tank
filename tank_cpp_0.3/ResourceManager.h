@@ -3,6 +3,7 @@
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
+#include <SDL/SDL_ttf.h>
 #include <vector>
 
 class ResourceManager
@@ -15,6 +16,10 @@ public:
 		return m_vecBulletBombEffectImg;
 	}
 
+	const TTF_Font* getNormalFont() const{
+		return m_pNormalFont;	
+	}
+
 	~ResourceManager();
 private:
 	ResourceManager(){};
@@ -22,6 +27,7 @@ private:
 	ResourceManager& operator= (const ResourceManager &);
 
 	std::vector<SDL_Surface*> m_vecBulletBombEffectImg;
+	TTF_Font *m_pNormalFont;
 };
 
 #define resourceMgr ResourceManager::getInstance()

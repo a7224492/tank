@@ -11,7 +11,7 @@
 
 #define MOVE_DELAY 4000
 #define MAX_BULLET_NUM 4
-#define FIRST_SPEED 0.2
+#define FIRST_SPEED 0.15
 
 MyTank::MyTank(Vector2D pos, Dir direction): Tank(pos, direction)
 {

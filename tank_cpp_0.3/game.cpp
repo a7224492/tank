@@ -6,17 +6,17 @@
 #include <string>
 #include <SDL/SDL_rotozoom.h>
 #include <SDL/SDL_image.h>
+#include <sstream>
 
 using namespace std;
 
-#define IMG_PATH "/home/jz/project/GithubCode/tank/gfx/"
+#ifndef _WIN32
+#define IMG_PATH "/mnt/share/tank/gfx/"
+#else 
+#define IMG_PATH "E:/github_code/tank/gfx/"
+#endif
 #define MAX_ENEMY_NUM 1
 #define BOMB_IMG_NUM 14
-#define SET_IMG_CANCEL_RGB(img, r,g,b)\
-	SDL_Surface *(temp##img)= SDL_DisplayFormat(img);\
-	SDL_FreeSurface(img);\
-	img = temp##img;\
-	SDL_SetColorKey(img, SDL_SRCCOLORKEY, SDL_MapRGB(img->format,r,g,b));
 
 Game::Game(SDL_Surface *screen):
 	screen(screen)
@@ -33,7 +33,6 @@ void Game::loadData()
 		string imgFile = IMG_PATH"TankImg"+itos(i)+".png";
 		SDL_Surface *img = IMG_Load(imgFile.c_str());
 		img = rotozoomSurface(img, 0, 0.6, SMOOTHING_ON);
-		//SET_IMG_CANCEL_RGB(img, 255, 255, 255);
 		myTankImg.push_back(img);
 	}
 	for (int i = 0; i < MoveObject::DIR_NUM; ++i)
@@ -100,7 +99,7 @@ void Game::init()
 	}
 }
 
-int Game::updateGame()
+int Game::updateGame(double elapsedTime)
 {
 	Uint8 *keystate = SDL_GetKeyState(0);
 	if (keystate[SDLK_ESCAPE])
@@ -131,5 +130,23 @@ void Game::drawGame()
 			enemyTankVec[i]->draw();
 		}
 	}
+    drawFPS(screen, Vector2D(200,200));
 	SDL_Flip(screen);
+}
+void Game::drawFPS(SDL_Surface *screen, Vector2D pos)
+{
+	double second = m_dElapsedTime/1000;
+
+	double fps = 1/second;
+    const TTF_Font *font = resourceMgr->getNormalFont();
+	stringstream ss;
+
+	ss << fps;
+    SDL_Color clr = {255, 0, 0};
+    SDL_Surface *fontSurface = TTF_RenderText_Solid(
+			const_cast<TTF_Font *>(font), 
+			ss.str().c_str(), 
+			clr);
+	SDL_Rect rect = {pos.x,pos.y,0,0};
+	SDL_BlitSurface(fontSurface, NULL, screen, &rect);
 }

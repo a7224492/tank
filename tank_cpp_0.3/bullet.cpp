@@ -6,7 +6,7 @@
 
 Bullet::Bullet(Vector2D pos, Dir direction) : MoveObject(pos, direction)
 {
-	m_dSpeed = 0.4;
+	m_dSpeed = 0.2;
 	fsm = new StateMachine<Bullet>(this);
 	velocity = directionVelocity[direction];
 	velocity.Normalize();

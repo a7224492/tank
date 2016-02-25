@@ -12,6 +12,9 @@
 #include <math.h>
 #include <iosfwd>
 #include <limits>
+#ifdef _WIN32
+#include <Windows.h>
+#endif
 #include "utils.h"
 
 struct Vector2D
@@ -251,6 +254,11 @@ inline void Vector2D::Normalize()
 
 //------------------------------------------------------------------------non member functions
 
+inline Vector2D sinVector(const Vector2D &v1, const Vector2D &v2)
+{
+    return (v1-v2*(v1.Dot(v2)/v2.LengthSq()));
+}
+
 inline Vector2D Vec2DNormalize(const Vector2D &v)
 {
   Vector2D vec = v;
@@ -295,35 +303,35 @@ inline double Vec2DLengthSq(const Vector2D& v)
   return (v.x*v.x + v.y*v.y);
 }
 
+#ifdef _WIN32
+inline Vector2D POINTStoVector(const POINTS& p)
+{
+  return Vector2D(p.x, p.y);
+}
 
-//inline Vector2D POINTStoVector(const POINTS& p)
-//{
-//  return Vector2D(p.x, p.y);
-//}
-//
-//inline Vector2D POINTtoVector(const POINT& p)
-//{
-//  return Vector2D((double)p.x, (double)p.y);
-//}
-//
-//inline POINTS VectorToPOINTS(const Vector2D& v)
-//{
-//  POINTS p;
-//  p.x = (short)v.x;
-//  p.y = (short)v.y;
-//
-//  return p;
-//}
-//
-//inline POINT VectorToPOINT(const Vector2D& v)
-//{
-//  POINT p;
-//  p.x = (long)v.x;
-//  p.y = (long)v.y;
-//
-//  return p;
-//}
+inline Vector2D POINTtoVector(const POINT& p)
+{
+  return Vector2D((double)p.x, (double)p.y);
+}
 
+inline POINTS VectorToPOINTS(const Vector2D& v)
+{
+  POINTS p;
+  p.x = (short)v.x;
+  p.y = (short)v.y;
+
+  return p;
+}
+
+inline POINT VectorToPOINT(const Vector2D& v)
+{
+  POINT p;
+  p.x = (long)v.x;
+  p.y = (long)v.y;
+
+  return p;
+}
+#endif
 
 
 //------------------------------------------------------------------------operator overloads

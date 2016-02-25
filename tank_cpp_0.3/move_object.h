@@ -64,21 +64,29 @@ protected:
 	Dir direction;
 	int moveFrame;
 	double angle;
-
 	
 private:
 	
 };
 
 const Vector2D directionVelocity[] = {
-	Vector2D(0,-1),
-	Vector2D(1,-1),
-	Vector2D(1,0),
-	Vector2D(1,1),
-	Vector2D(0,1),
-	Vector2D(-1,1),
-	Vector2D(-1,0),
-	Vector2D(-1,-1),
+    Vector2D(0,-1),
+    Vec2DNormalize(Vector2D(1,-1)),
+    Vector2D(1,0),
+    Vec2DNormalize(Vector2D(1,1)),
+    Vector2D(0,1),
+    Vec2DNormalize(Vector2D(-1,1)),
+    Vector2D(-1,0),
+    Vec2DNormalize(Vector2D(-1,-1))
 };
+
+MoveObject::Dir getDirByVelocity(Vector2D velocity)
+{
+    for (int i = 0; i < MoveObject::DIR_NUM; ++i) {
+        if (velocity == directionVelocity[i])
+            return static_cast<MoveObject::Dir>(i);
+    }
+}
+
 
 #endif
